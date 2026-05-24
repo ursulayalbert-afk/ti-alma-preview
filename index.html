@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colección ALMA · Triple Intención</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --tierra:   #2C1A0E;
+      --turquesa: #5B8C7E;
+      --arena:    #C4A882;
+      --blanco:   #FAFAF5;
+      --gris-claro: #EDECE8;
+      --gris-borde: #DDD9D0;
+      --texto:    #2C1A0E;
+      --suave:    #7A6852;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--blanco); color: var(--texto); font-size: 14px; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── BARRA SUPERIOR ─────────────────────── */
+    .topbar {
+      background: var(--tierra);
+      color: rgba(250,250,245,0.88);
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 9px 20px;
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    .header {
+      background: var(--blanco);
+      border-bottom: 1px solid var(--gris-borde);
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      height: 72px;
+    }
+    .header-icons-left { display: flex; gap: 20px; }
+    .header-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--tierra);
+    }
+    .header-icons-right { display: flex; gap: 20px; justify-content: flex-end; align-items: center; }
+    .header-icon {
+      width: 20px; height: 20px;
+      color: var(--tierra);
+      cursor: pointer;
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    .header-icon:hover { opacity: 1; }
+
+    /* ── NAV ────────────────────────────────── */
+    .main-nav {
+      background: var(--blanco);
+      border-bottom: 1px solid var(--gris-borde);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+    .main-nav a {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tierra);
+      padding: 14px 22px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .main-nav a:hover,
+    .main-nav a.active { border-bottom-color: var(--tierra); }
+
+    /* ── AVISO ──────────────────────────────── */
+    .notice-bar {
+      background: #F3F0EA;
+      text-align: center;
+      font-size: 12px;
+      color: var(--suave);
+      padding: 8px 20px;
+      border-bottom: 1px solid var(--gris-borde);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── BREADCRUMB ─────────────────────────── */
+    .breadcrumb {
+      padding: 16px 64px;
+      font-size: 12px;
+      color: var(--suave);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .breadcrumb span { opacity: 0.5; }
+
+    /* ── PRODUCTO LAYOUT ────────────────────── */
+    .product-page {
+      display: none;
+      padding: 0 64px 80px;
+    }
+    .product-page.active { display: block; }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Galería */
+    .gallery { display: flex; gap: 12px; }
+    .gallery-thumbs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 72px;
+      flex-shrink: 0;
+    }
+    .thumb {
+      width: 72px; height: 72px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      overflow: hidden;
+      border-radius: 2px;
+      transition: border-color 0.15s;
+    }
+    .thumb.active { border-color: var(--tierra); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      font-style: italic;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .gallery-main {
+      flex: 1;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      border-radius: 2px;
+      position: relative;
+    }
+    .gallery-main img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .gallery-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+    .gallery-placeholder .pl-nombre {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .gallery-placeholder .pl-nota {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      background: rgba(0,0,0,0.15);
+      padding: 5px 14px;
+      border-radius: 12px;
+    }
+
+    /* Info producto */
+    .product-info { padding-top: 8px; }
+
+    .product-collection {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--turquesa);
+      margin-bottom: 10px;
+    }
+
+    .product-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--tierra);
+      margin-bottom: 12px;
+    }
+
+    .product-frase {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--arena);
+      margin-bottom: 16px;
+    }
+
+    /* Estrellas */
+    .stars {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .stars-icons { color: #C4A030; font-size: 14px; letter-spacing: 2px; }
+    .stars-count { font-size: 12px; color: var(--suave); }
+
+    /* Precio */
+    .product-price {
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--tierra);
+      margin-bottom: 24px;
+    }
+    .product-price span {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--suave);
+      margin-left: 4px;
+    }
+
+    /* Descripción */
+    .product-desc {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--texto);
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--gris-borde);
+    }
+    .product-desc p { margin-bottom: 4px; }
+
+    /* Selector qty */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .qty-label { font-size: 13px; font-weight: 500; color: var(--tierra); }
+    .qty-input {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--gris-borde);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .qty-btn {
+      width: 36px; height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--tierra);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: var(--gris-claro); }
+    .qty-num {
+      width: 44px; height: 36px;
+      text-align: center;
+      border: none;
+      border-left: 1px solid var(--gris-borde);
+      border-right: 1px solid var(--gris-borde);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--tierra);
+      background: none;
+    }
+
+    /* CTA */
+    .btn-add-cart {
+      width: 100%;
+      background: var(--tierra);
+      color: var(--blanco);
+      border: none;
+      padding: 16px 32px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+    .btn-add-cart:hover { background: #3D2B1A; }
+
+    .btn-wishlist {
+      width: 100%;
+      background: none;
+      border: 1px solid var(--gris-borde);
+      color: var(--suave);
+      padding: 13px 32px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      margin-bottom: 28px;
+      transition: all 0.2s;
+    }
+    .btn-wishlist:hover { border-color: var(--tierra); color: var(--tierra); }
+
+    /* Garantías */
+    .guarantees {
+      border: 1px solid var(--gris-borde);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .guarantee-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--gris-borde);
+      font-size: 13px;
+    }
+    .guarantee-item:last-child { border-bottom: none; }
+    .guarantee-icon {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .guarantee-text strong { display: block; font-weight: 600; color: var(--tierra); margin-bottom: 1px; }
+    .guarantee-text span { color: var(--suave); font-size: 12px; }
+
+    /* Tags */
+    .product-tags {
+      margin-top: 24px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 4px 12px;
+      border: 1px solid var(--gris-borde);
+      border-radius: 20px;
+      color: var(--suave);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── NAV PRODUCTOS (selector) ───────────── */
+    .products-selector {
+      background: var(--blanco);
+      border-bottom: 2px solid var(--gris-borde);
+      display: flex;
+      padding: 0 64px;
+      gap: 0;
+      margin-bottom: 0;
+    }
+    .product-tab {
+      padding: 16px 24px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--suave);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .product-tab:hover { color: var(--tierra); }
+    .product-tab.active { color: var(--tierra); border-bottom-color: var(--tierra); }
+
+    /* ── GRADIENTES BOLSAS ──────────────────── */
+    .grad-luna     { background: linear-gradient(160deg, #EDE0CF 0%, #D4B8AE 40%, #B5CABC 75%, #C8D8C0 100%); }
+    .grad-mariposa { background: linear-gradient(160deg, #C17E5A 0%, #9C6A45 35%, #C2A87A 60%, #8FA394 100%); }
+    .grad-pluma    { background: linear-gradient(160deg, #E8836A 0%, #D4735C 35%, #A8C4C8 65%, #7BB0C0 100%); }
+    .grad-loto     { background: linear-gradient(160deg, #6E9985 0%, #5B8C7E 40%, #8DB5A4 70%, #E8F0EC 100%); }
+
+    /* ── FOOTER ─────────────────────────────── */
+    .footer-band {
+      background: var(--tierra);
+      color: rgba(250,250,245,0.5);
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      padding: 20px;
+      margin-top: 60px;
+    }
+
+    /* ── SIMULACION BADGE ───────────────────── */
+    .sim-badge {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      background: rgba(91,140,126,0.92);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ═══════════════════════════════════════════
+       EMAIL ALMA — estilos del simulador de email
+    ═══════════════════════════════════════════ */
+
+    /* Wrapper exterior: fondo gris como cliente de correo */
+    .email-page {
+      display: none;
+      background: #EAEAEA;
+      padding: 40px 20px 80px;
+    }
+    .email-page.active { display: block; }
+
+    /* Selectores de versión (VIP / Open90) */
+    .email-version-bar {
+      max-width: 640px;
+      margin: 0 auto 20px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .email-version-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #666;
+      margin-right: 4px;
+    }
+    .email-ver-btn {
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid #CCC;
+      border-radius: 20px;
+      background: white;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .email-ver-btn.active {
+      background: var(--tierra);
+      color: white;
+      border-color: var(--tierra);
+    }
+
+    /* Simulación de cabecera de cliente email (Gmail style) */
+    .email-client-shell {
+      max-width: 640px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .email-client-header {
+      background: white;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #E8E8E8;
+    }
+    .email-subject-line {
+      font-size: 20px;
+      font-weight: 400;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .email-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .email-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--tierra);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .email-sender-info { flex: 1; min-width: 0; }
+    .email-sender-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .email-sender-addr {
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .email-date {
+      font-size: 11px;
+      color: #888;
+      flex-shrink: 0;
+    }
+
+    /* ── Cuerpo del email propiamente dicho ── */
+    .email-body-wrap {
+      background: #F8F5EF;
+      padding: 0;
+    }
+
+    /* Franja anuncio */
+    .em-announce {
+      background: var(--tierra);
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      padding: 8px 20px;
+    }
+
+    /* Header del email */
+    .em-header {
+      background: white;
+      text-align: center;
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid #EEE9DF;
+    }
+    .em-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--tierra);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .em-tagline {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--arena);
+    }
+
+    /* Hero */
+    .em-hero {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(160deg, #EDE0CF 0%, #C4A882 40%, #5B8C7E 100%);
+      overflow: hidden;
+      position: relative;
+    }
+    .em-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .em-hero-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .em-hero-placeholder span:first-child {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.9);
+    }
+    .em-hero-placeholder span:last-child {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.18);
+      padding: 4px 12px;
+      border-radius: 10px;
+    }
+
+    /* Bloque de preheader / intro */
+    .em-preheader-block {
+      background: white;
+      text-align: center;
+      padding: 32px 40px 24px;
+    }
+    .em-saludo {
+      font-size: 13px;
+      color: var(--suave);
+      margin-bottom: 16px;
+    }
+    .em-intro {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--tierra);
+    }
+
+    /* Cuerpo principal */
+    .em-text {
+      background: white;
+      padding: 0 40px 32px;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--texto);
+    }
+    .em-text p { margin-bottom: 8px; }
+    .em-text p:empty { height: 8px; }
+    .em-text strong { font-weight: 600; color: var(--tierra); }
+
+    /* Divisor */
+    .em-divider {
+      height: 1px;
+      background: #EEE9DF;
+      margin: 0 40px;
+    }
+
+    /* Sección de colección */
+    .em-collection-intro {
+      background: white;
+      padding: 28px 40px 8px;
+      text-align: center;
+    }
+    .em-collection-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--turquesa);
+      margin-bottom: 8px;
+    }
+    .em-collection-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--tierra);
+    }
+
+    /* Grid de productos en el email */
+    .em-products {
+      background: white;
+      padding: 20px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .em-product-card {
+      border: 1px solid var(--gris-borde);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .em-product-img {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .em-product-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .em-product-img-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .em-product-img-placeholder span:first-child {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.85);
+    }
+    .em-product-info-block {
+      padding: 12px 14px;
+      background: white;
+    }
+    .em-product-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--tierra);
+      margin-bottom: 3px;
+    }
+    .em-product-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--suave);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+    .em-product-price-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--turquesa);
+    }
+
+    /* CTA */
+    .em-cta-wrap {
+      background: white;
+      padding: 8px 40px 36px;
+      text-align: center;
+    }
+    .em-cta-btn {
+      display: inline-block;
+      background: var(--tierra);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 15px 40px;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .em-cta-btn:hover { background: #3D2B1A; }
+
+    /* Cierre firma */
+    .em-firma {
+      background: white;
+      padding: 0 40px 36px;
+      border-top: 1px solid #EEE9DF;
+      padding-top: 24px;
+    }
+    .em-firma p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texto);
+    }
+    .em-firma strong {
+      font-weight: 600;
+      color: var(--tierra);
+    }
+
+    /* Footer del email */
+    .em-footer {
+      background: var(--tierra);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      line-height: 1.8;
+      padding: 24px 24px 28px;
+    }
+    .em-footer a { color: rgba(255,255,255,0.7); text-decoration: underline; }
+
+    /* ── Texto expandido (read more) ─────────── */
+    .em-text-short { display: block; }
+    .em-text-full  { display: none; }
+    .em-read-more {
+      font-size: 12px;
+      color: var(--turquesa);
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      padding: 4px 0;
+      display: inline-block;
+    }
+    .em-read-more:hover { text-decoration: underline; }
+
+    @media (max-width: 900px) {
+      .product-layout { grid-template-columns: 1fr; gap: 32px; }
+      .header { padding: 0 24px; }
+      .product-page { padding: 0 24px 60px; }
+      .products-selector { padding: 0 24px; overflow-x: auto; }
+      .breadcrumb { padding: 16px 24px; }
+      .email-page { padding: 20px 0 60px; }
+      .email-client-shell { border-radius: 0; }
+      .em-text { padding: 0 24px 28px; }
+      .em-divider { margin: 0 24px; }
+      .em-preheader-block { padding: 28px 24px 20px; }
+      .em-collection-intro { padding: 24px 24px 8px; }
+      .em-products { padding: 16px 16px 24px; gap: 12px; }
+      .em-cta-wrap { padding: 8px 24px 32px; }
+      .em-firma { padding: 20px 24px 32px; }
+      .email-version-bar { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="sim-badge">Simulación</div>
+
+<!-- BARRA SUPERIOR -->
+<div class="topbar">
+  ✨ Envíos gratuitos a partir de 40€ en Península &nbsp;·&nbsp; Devoluciones Gratis ✨
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-icons-left">
+    <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  </div>
+  <div class="header-logo">Triple Intención</div>
+  <div class="header-icons-right">
+    <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <div style="display:flex;align-items:flex-start">
+      <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </div>
+  </div>
+</header>
+
+<!-- NAV PRINCIPAL -->
+<nav class="main-nav">
+  <a href="#" class="active">Productos</a>
+  <a href="#">Quemadores</a>
+  <a href="#">Packs</a>
+  <a href="#">Contacto</a>
+  <a href="#">Sobre Nosotros</a>
+</nav>
+
+<!-- AVISO ENVÍOS -->
+<div class="notice-bar">
+  ✨ Tiempo de preparación del pedido entre 1 y 2 días laborales. Una vez enviado lo recibirás en 24h.
+</div>
+
+<!-- SELECTOR DE PRODUCTOS/EMAIL -->
+<div class="products-selector">
+  <div class="product-tab active" onclick="showProduct('luna', this)">Tote Bag Luna</div>
+  <div class="product-tab" onclick="showProduct('mariposa', this)">Tote Bag Mariposa</div>
+  <div class="product-tab" onclick="showProduct('pluma', this)">Tote Bag Pluma</div>
+  <div class="product-tab" onclick="showProduct('loto', this)">Tote Bag Loto</div>
+  <div class="product-tab" onclick="showProduct('email', this)" style="border-left:1px solid var(--gris-borde);margin-left:16px;color:var(--turquesa)">✉ Email ALMA</div>
+</div>
+
+<!-- ══ LUNA ══════════════════════════════════════ -->
+<div id="prod-luna" class="product-page active">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a> <span>/</span>
+    <a href="#">Colección ALMA</a> <span>/</span>
+    <span style="color:var(--tierra)">Tote Bag Luna</span>
+  </div>
+  <div class="product-layout">
+    <div class="gallery">
+      <div class="gallery-thumbs">
+        <div class="thumb active grad-luna">
+          <div class="thumb-placeholder">Luna</div>
+        </div>
+        <div class="thumb grad-luna" style="opacity:0.6">
+          <div class="thumb-placeholder">DTF</div>
+        </div>
+        <div class="thumb grad-luna" style="opacity:0.4">
+          <div class="thumb-placeholder">Det.</div>
+        </div>
+      </div>
+      <div class="gallery-main grad-luna" id="luna-main-img">
+        <div class="gallery-placeholder">
+          <span class="pl-nombre">Luna</span>
+          <span class="pl-nota">Foto generándose…</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-collection">Colección ALMA</div>
+      <h1 class="product-title">Tote Bag Luna</h1>
+      <div class="product-frase">"Si vas a soñar, ¡Exagera!"</div>
+      <div class="stars">
+        <span class="stars-icons">★★★★★</span>
+        <span class="stars-count">5.0 (—)</span>
+      </div>
+      <div class="product-price">22,95 € <span>IVA incluido</span></div>
+      <div class="product-desc">
+        <p>Hay sueños que se quedan a medias.</p>
+        <p>No por falta de ganas.</p>
+        <p>Por miedo a ocupar demasiado espacio.</p>
+        <p>&nbsp;</p>
+        <p>Esta bolsa es para quien decide no recortarse.</p>
+        <p>Para quien lleva sus ideas al hombro sin pedir permiso.</p>
+        <p>&nbsp;</p>
+        <p>Luna creciente entre flores.</p>
+        <p>Crema, rosa palo, verde sage.</p>
+        <p>Un diseño que no grita, pero se ve.</p>
+        <p>&nbsp;</p>
+        <p>La llevas al mercado, al estudio, al café del martes.</p>
+        <p>Y a veces, sin que nadie lo sepa,</p>
+        <p>te recuerda que puedes soñar en grande.</p>
+      </div>
+      <div class="qty-row">
+        <span class="qty-label">Cantidad</span>
+        <div class="qty-input">
+          <button class="qty-btn" onclick="changeQty(-1, this)">−</button>
+          <input class="qty-num" type="number" value="1" min="1">
+          <button class="qty-btn" onclick="changeQty(1, this)">+</button>
+        </div>
+      </div>
+      <button class="btn-add-cart">Añadir al carrito</button>
+      <button class="btn-wishlist">♡ &nbsp;Guardar en lista de deseos</button>
+      <div class="guarantees">
+        <div class="guarantee-item">
+          <span class="guarantee-icon">🚚</span>
+          <div class="guarantee-text">
+            <strong>Envío gratis</strong>
+            <span>En pedidos a partir de 40€ · Península</span>
+          </div>
+        </div>
+        <div class="guarantee-item">
+          <span class="guarantee-icon">↩</span>
+          <div class="guarantee-text">
+            <strong>Devolución gratuita</strong>
+            <span>30 días desde la recepción</span>
+          </div>
+        </div>
+        <div class="guarantee-item">
+          <span class="guarantee-icon">📦</span>
+          <div class="guarantee-text">
+            <strong>Preparación 1–2 días laborales</strong>
+            <span>Envío en 24h una vez preparado</span>
+          </div>
+        </div>
+      </div>
+      <div class="product-tags">
+        <span class="tag">Algodón 100%</span>
+        <span class="tag">DTF alta resolución</span>
+        <span class="tag">25 cm</span>
+        <span class="tag">Asas largas</span>
+        <span class="tag">Hecho en España</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MARIPOSA ══════════════════════════════════ -->
+<div id="prod-mariposa" class="product-page">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a> <span>/</span>
+    <a href="#">Colección ALMA</a> <span>/</span>
+    <span style="color:var(--tierra)">Tote Bag Mariposa</span>
+  </div>
+  <div class="product-layout">
+    <div class="gallery">
+      <div class="gallery-thumbs">
+        <div class="thumb active grad-mariposa">
+          <div class="thumb-placeholder">Mrp.</div>
+        </div>
+        <div class="thumb grad-mariposa" style="opacity:0.6">
+          <div class="thumb-placeholder">DTF</div>
+        </div>
+        <div class="thumb grad-mariposa" style="opacity:0.4">
+          <div class="thumb-placeholder">Det.</div>
+        </div>
+      </div>
+      <div class="gallery-main grad-mariposa" id="mariposa-main-img">
+        <img src="../imagenes/lifestyle_mariposa_final.png" alt="Tote Bag Mariposa" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="gallery-placeholder" style="display:none">
+          <span class="pl-nombre">Mariposa</span>
+          <span class="pl-nota">Foto generándose…</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-collection">Colección ALMA</div>
+      <h1 class="product-title">Tote Bag Mariposa</h1>
+      <div class="product-frase">"Mi energía habla antes que yo"</div>
+      <div class="stars">
+        <span class="stars-icons">★★★★★</span>
+        <span class="stars-count">5.0 (—)</span>
+      </div>
+      <div class="product-price">22,95 € <span>IVA incluido</span></div>
+      <div class="product-desc">
+        <p>Hay personas que entran a un sitio y ya se siente algo diferente.</p>
+        <p>No es lo que dicen.</p>
+        <p>Es lo que traen.</p>
+        <p>&nbsp;</p>
+        <p>No hace falta explicarlo.</p>
+        <p>Ni demostrarlo.</p>
+        <p>Se nota y punto.</p>
+        <p>&nbsp;</p>
+        <p>Esta bolsa nació pensando en eso.</p>
+        <p>En esa presencia que llega antes de las palabras.</p>
+        <p>&nbsp;</p>
+        <p>Mariposa en terracota, oro viejo y sage.</p>
+        <p>Ligera. Segura. Sin necesidad de justificarse.</p>
+      </div>
+      <div class="qty-row">
+        <span class="qty-label">Cantidad</span>
+        <div class="qty-input">
+          <button class="qty-btn" onclick="changeQty(-1, this)">−</button>
+          <input class="qty-num" type="number" value="1" min="1">
+          <button class="qty-btn" onclick="changeQty(1, this)">+</button>
+        </div>
+      </div>
+      <button class="btn-add-cart">Añadir al carrito</button>
+      <button class="btn-wishlist">♡ &nbsp;Guardar en lista de deseos</button>
+      <div class="guarantees">
+        <div class="guarantee-item"><span class="guarantee-icon">🚚</span><div class="guarantee-text"><strong>Envío gratis</strong><span>En pedidos a partir de 40€ · Península</span></div></div>
+        <div class="guarantee-item"><span class="guarantee-icon">↩</span><div class="guarantee-text"><strong>Devolución gratuita</strong><span>30 días desde la recepción</span></div></div>
+        <div class="guarantee-item"><span class="guarantee-icon">📦</span><div class="guarantee-text"><strong>Preparación 1–2 días laborales</strong><span>Envío en 24h una vez preparado</span></div></div>
+      </div>
+      <div class="product-tags">
+        <span class="tag">Algodón 100%</span><span class="tag">DTF alta resolución</span><span class="tag">25 cm</span><span class="tag">Asas largas</span><span class="tag">Hecho en España</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PLUMA ═════════════════════════════════════ -->
+<div id="prod-pluma" class="product-page">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a> <span>/</span>
+    <a href="#">Colección ALMA</a> <span>/</span>
+    <span style="color:var(--tierra)">Tote Bag Pluma</span>
+  </div>
+  <div class="product-layout">
+    <div class="gallery">
+      <div class="gallery-thumbs">
+        <div class="thumb active grad-pluma"><div class="thumb-placeholder">Plm.</div></div>
+        <div class="thumb grad-pluma" style="opacity:0.6"><div class="thumb-placeholder">DTF</div></div>
+        <div class="thumb grad-pluma" style="opacity:0.4"><div class="thumb-placeholder">Det.</div></div>
+      </div>
+      <div class="gallery-main grad-pluma" id="pluma-main-img">
+        <div class="gallery-placeholder">
+          <span class="pl-nombre">Pluma</span>
+          <span class="pl-nota">Foto generándose…</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-collection">Colección ALMA</div>
+      <h1 class="product-title">Tote Bag Pluma</h1>
+      <div class="product-frase">"Si no pasa, también es una señal"</div>
+      <div class="stars"><span class="stars-icons">★★★★★</span><span class="stars-count">5.0 (—)</span></div>
+      <div class="product-price">22,95 € <span>IVA incluido</span></div>
+      <div class="product-desc">
+        <p>A veces la respuesta es no.</p>
+        <p>Y eso también está bien.</p>
+        <p>&nbsp;</p>
+        <p>No todos los caminos son para ti.</p>
+        <p>No todas las puertas se abren porque sean las tuyas.</p>
+        <p>&nbsp;</p>
+        <p>Soltar no es renunciar.</p>
+        <p>Es saber dónde poner lo que tienes.</p>
+        <p>&nbsp;</p>
+        <p>La pluma cae en degradado, del coral al azul cielo.</p>
+        <p>Ligera. Viva. Sin peso innecesario.</p>
+        <p>&nbsp;</p>
+        <p>Un recordatorio de que lo que no pesa, vuela.</p>
+        <p>Y tú, también.</p>
+      </div>
+      <div class="qty-row"><span class="qty-label">Cantidad</span><div class="qty-input"><button class="qty-btn" onclick="changeQty(-1,this)">−</button><input class="qty-num" type="number" value="1" min="1"><button class="qty-btn" onclick="changeQty(1,this)">+</button></div></div>
+      <button class="btn-add-cart">Añadir al carrito</button>
+      <button class="btn-wishlist">♡ &nbsp;Guardar en lista de deseos</button>
+      <div class="guarantees">
+        <div class="guarantee-item"><span class="guarantee-icon">🚚</span><div class="guarantee-text"><strong>Envío gratis</strong><span>En pedidos a partir de 40€ · Península</span></div></div>
+        <div class="guarantee-item"><span class="guarantee-icon">↩</span><div class="guarantee-text"><strong>Devolución gratuita</strong><span>30 días desde la recepción</span></div></div>
+        <div class="guarantee-item"><span class="guarantee-icon">📦</span><div class="guarantee-text"><strong>Preparación 1–2 días laborales</strong><span>Envío en 24h una vez preparado</span></div></div>
+      </div>
+      <div class="product-tags"><span class="tag">Algodón 100%</span><span class="tag">DTF alta resolución</span><span class="tag">25 cm</span><span class="tag">Asas largas</span><span class="tag">Hecho en España</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOTO ══════════════════════════════════════ -->
+<div id="prod-loto" class="product-page">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a> <span>/</span>
+    <a href="#">Colección ALMA</a> <span>/</span>
+    <span style="color:var(--tierra)">Tote Bag Loto</span>
+  </div>
+  <div class="product-layout">
+    <div class="gallery">
+      <div class="gallery-thumbs">
+        <div class="thumb active grad-loto"><div class="thumb-placeholder">Loto</div></div>
+        <div class="thumb grad-loto" style="opacity:0.6"><div class="thumb-placeholder">DTF</div></div>
+        <div class="thumb grad-loto" style="opacity:0.4"><div class="thumb-placeholder">Det.</div></div>
+      </div>
+      <div class="gallery-main grad-loto" id="loto-main-img">
+        <div class="gallery-placeholder">
+          <span class="pl-nombre">Loto</span>
+          <span class="pl-nota">Foto generándose…</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-collection">Colección ALMA</div>
+      <h1 class="product-title">Tote Bag Loto</h1>
+      <div class="product-frase">"Rendirse no es una opción"</div>
+      <div class="stars"><span class="stars-icons">★★★★★</span><span class="stars-count">5.0 (—)</span></div>
+      <div class="product-price">22,95 € <span>IVA incluido</span></div>
+      <div class="product-desc">
+        <p>El loto no crece a pesar del barro.</p>
+        <p>Crece gracias a él.</p>
+        <p>&nbsp;</p>
+        <p>Hay cosas que solo se aprenden cuando el terreno es difícil.</p>
+        <p>Una firmeza que no grita.</p>
+        <p>Que no necesita demostrarse.</p>
+        <p>Que simplemente sigue.</p>
+        <p>&nbsp;</p>
+        <p>Esta bolsa es para los días que cuestan.</p>
+        <p>Para las semanas que piden más de lo que parecía razonable.</p>
+        <p>&nbsp;</p>
+        <p>Flor de loto en verde sage y blanco natural.</p>
+        <p>La calma de quien ya ha superado cosas más duras que esta.</p>
+        <p>Y lo sabe.</p>
+      </div>
+      <div class="qty-row"><span class="qty-label">Cantidad</span><div class="qty-input"><button class="qty-btn" onclick="changeQty(-1,this)">−</button><input class="qty-num" type="number" value="1" min="1"><button class="qty-btn" onclick="changeQty(1,this)">+</button></div></div>
+      <button class="btn-add-cart">Añadir al carrito</button>
+      <button class="btn-wishlist">♡ &nbsp;Guardar en lista de deseos</button>
+      <div class="guarantees">
+        <div class="guarantee-item"><span class="guarantee-icon">🚚</span><div class="guarantee-text"><strong>Envío gratis</strong><span>En pedidos a partir de 40€ · Península</span></div></div>
+        <div class="guarantee-item"><span class="guarantee-icon">↩</span><div class="guarantee-text"><strong>Devolución gratuita</strong><span>30 días desde la recepción</span></div></div>
+        <div class="guarantee-item"><span class="guarantee-icon">📦</span><div class="guarantee-text"><strong>Preparación 1–2 días laborales</strong><span>Envío en 24h una vez preparado</span></div></div>
+      </div>
+      <div class="product-tags"><span class="tag">Algodón 100%</span><span class="tag">DTF alta resolución</span><span class="tag">25 cm</span><span class="tag">Asas largas</span><span class="tag">Hecho en España</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EMAIL ALMA ═══════════════════════════════ -->
+<div id="prod-email" class="email-page">
+
+  <!-- Selector VIP / Open90 -->
+  <div class="email-version-bar">
+    <span class="email-version-label">Versión:</span>
+    <button class="email-ver-btn" id="btn-open90" onclick="showEmailVersion('open90')" style="background:var(--tierra);color:white;border-color:var(--tierra)">Lanzamiento general</button>
+    <button class="email-ver-btn" id="btn-vip" onclick="showEmailVersion('vip')">VIP · 318 personas</button>
+  </div>
+
+  <!-- ══ EMAIL OPEN90 ══ -->
+  <div id="email-open90" class="email-client-shell">
+    <!-- Cabecera cliente email -->
+    <div class="email-client-header">
+      <div class="email-subject-line">Hemos hecho algo que nunca habíamos hecho</div>
+      <div class="email-meta">
+        <div class="email-avatar">TI</div>
+        <div class="email-sender-info">
+          <div class="email-sender-name">Triple Intención</div>
+          <div class="email-sender-addr">hola@tripleintencion.com · Para: tú</div>
+        </div>
+        <div class="email-date">hoy, 10:00</div>
+      </div>
+    </div>
+
+    <!-- Cuerpo del email -->
+    <div class="email-body-wrap">
+
+      <!-- Barra anuncio superior -->
+      <div class="em-announce">✨ Nueva colección ALMA · Solo por tiempo limitado</div>
+
+      <!-- Header con logo -->
+      <div class="em-header">
+        <span class="em-logo">Triple Intención</span>
+        <span class="em-tagline">Rituales · Artesanía · Presencia</span>
+      </div>
+
+      <!-- Hero image -->
+      <div class="em-hero" id="em-hero-open90">
+        <div class="em-hero-placeholder">
+          <span>ALMA</span>
+          <span>lifestyle_mariposa_final.png</span>
+        </div>
+      </div>
+
+      <!-- Intro -->
+      <div class="em-preheader-block">
+        <p class="em-saludo">Hola,</p>
+        <p class="em-intro">Desde que existe Triple Intención,<br>todo ha girado alrededor de un mismo lugar.</p>
+      </div>
+
+      <!-- Texto principal -->
+      <div class="em-text">
+        <p>Tu casa.</p>
+        <p>Tu rincón.</p>
+        <p>Tu ritual.</p>
+        <p>&nbsp;</p>
+        <p>El quemador sobre la mesita.</p>
+        <p>El palo santo al final del día.</p>
+        <p>La vela que enciendes cuando necesitas parar.</p>
+        <p>&nbsp;</p>
+        <p>Todo para adentro.<br>Todo para el espacio de casa.</p>
+        <p>&nbsp;</p>
+        <p><strong>Hasta ahora.</strong></p>
+        <p>&nbsp;</p>
+
+        <span class="em-text-short">
+          <p>Hoy presentamos <strong>ALMA</strong>.<br>La primera colección de Triple Intención pensada para salir contigo.</p>
+          <p>&nbsp;</p>
+          <p><span class="em-read-more" onclick="expandEmail('open90')">Seguir leyendo →</span></p>
+        </span>
+
+        <span class="em-text-full" id="em-full-open90">
+          <p>Hoy presentamos <strong>ALMA</strong>.<br>La primera colección de Triple Intención pensada para salir contigo.</p>
+          <p>&nbsp;</p>
+          <p>Son cuatro tote bags de algodón natural.<br>
+          Diseños DTF de alta resolución, 25 cm, hechos para verse y durar.<br>
+          Asas largas. Lavables. 22,95 €.</p>
+          <p>&nbsp;</p>
+          <p>Y cada una lleva una frase.<br>
+          No como decoración.<br>
+          Como recordatorio.</p>
+        </span>
+      </div>
+
+      <div class="em-divider"></div>
+
+      <!-- Sección colección -->
+      <div class="em-collection-intro">
+        <div class="em-collection-title">Colección ALMA</div>
+        <div class="em-collection-subtitle">Cuatro bolsas. Cuatro frases. Una intención.</div>
+      </div>
+
+      <!-- Grid productos -->
+      <div class="em-products">
+        <div class="em-product-card">
+          <div class="em-product-img grad-luna" id="em-img-luna">
+            <div class="em-product-img-placeholder">
+              <span>Luna</span>
+            </div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Luna</div>
+            <div class="em-product-quote">"Si vas a soñar, ¡Exagera!"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+        <div class="em-product-card">
+          <div class="em-product-img grad-mariposa" id="em-img-mariposa">
+            <div class="em-product-img-placeholder">
+              <span>Mariposa</span>
+            </div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Mariposa</div>
+            <div class="em-product-quote">"Mi energía habla antes que yo"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+        <div class="em-product-card">
+          <div class="em-product-img grad-pluma" id="em-img-pluma">
+            <div class="em-product-img-placeholder">
+              <span>Pluma</span>
+            </div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Pluma</div>
+            <div class="em-product-quote">"Si no pasa, también es una señal"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+        <div class="em-product-card">
+          <div class="em-product-img grad-loto" id="em-img-loto">
+            <div class="em-product-img-placeholder">
+              <span>Loto</span>
+            </div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Loto</div>
+            <div class="em-product-quote">"Rendirse no es una opción"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="em-cta-wrap">
+        <a href="#" class="em-cta-btn">Descubrir la colección ALMA</a>
+      </div>
+
+      <!-- Firma -->
+      <div class="em-firma">
+        <p>Un abrazo,</p>
+        <p><strong>Úrsula y Albert · Triple Intención</strong></p>
+      </div>
+
+      <!-- Footer email -->
+      <div class="em-footer">
+        Triple Intención · Tarragona<br>
+        <a href="#">Darte de baja</a> &nbsp;·&nbsp; <a href="#">Ver en el navegador</a><br>
+        <span style="opacity:0.4;font-size:9px">Simulación interna · No publicar sin validación de Úrsula</span>
+      </div>
+
+    </div><!-- /email-body-wrap -->
+  </div><!-- /email-client-shell open90 -->
+
+
+  <!-- ══ EMAIL VIP ══ -->
+  <div id="email-vip" class="email-client-shell" style="display:none">
+    <!-- Cabecera cliente email -->
+    <div class="email-client-header">
+      <div class="email-subject-line">Lo viste antes que nadie</div>
+      <div class="email-meta">
+        <div class="email-avatar">TI</div>
+        <div class="email-sender-info">
+          <div class="email-sender-name">Triple Intención</div>
+          <div class="email-sender-addr">hola@tripleintencion.com · Para: VIPs · 318 personas</div>
+        </div>
+        <div class="email-date">hoy, 09:00</div>
+      </div>
+    </div>
+
+    <!-- Cuerpo del email VIP -->
+    <div class="email-body-wrap">
+
+      <div class="em-announce">✨ Acceso exclusivo · Solo para clientes habituales</div>
+
+      <div class="em-header">
+        <span class="em-logo">Triple Intención</span>
+        <span class="em-tagline">Rituales · Artesanía · Presencia</span>
+      </div>
+
+      <!-- Hero image VIP -->
+      <div class="em-hero" id="em-hero-vip">
+        <div class="em-hero-placeholder">
+          <span>ALMA · VIP</span>
+          <span>lifestyle_luna_final.png</span>
+        </div>
+      </div>
+
+      <div class="em-preheader-block">
+        <p class="em-saludo">Hola,</p>
+        <p class="em-intro">No tenemos que explicarte<br>qué es Triple Intención.</p>
+      </div>
+
+      <div class="em-text">
+        <p>Tú ya lo sabes.</p>
+        <p>&nbsp;</p>
+        <p>Sabes cómo huele cuando abres un pedido.<br>
+        Sabes esa sensación de tener algo hecho con cuidado entre las manos.<br>
+        Y llevas tiempo eligiéndonos, no una vez, sino varias.</p>
+        <p>&nbsp;</p>
+        <p>Eso, para nosotros, significa mucho.</p>
+        <p>&nbsp;</p>
+        <p>Por eso hoy no llegamos con un email de lanzamiento.<br>
+        Llegamos a contarte algo antes de que lo vea nadie más.</p>
+        <p>&nbsp;</p>
+        <p><strong>Hemos creado ALMA.</strong></p>
+        <p>&nbsp;</p>
+
+        <span class="em-text-short">
+          <p>Es la primera vez que Triple Intención sale del hogar.</p>
+          <p><span class="em-read-more" onclick="expandEmail('vip')">Seguir leyendo →</span></p>
+        </span>
+
+        <span class="em-text-full" id="em-full-vip">
+          <p>Es la primera vez que Triple Intención sale del hogar.<br>
+          Todo lo que hemos hecho hasta ahora era para tu espacio.<br>
+          Para el rincón de casa. Para el ritual del final del día.</p>
+          <p>&nbsp;</p>
+          <p><strong>ALMA es diferente.<br>
+          ALMA sale contigo.</strong></p>
+          <p>&nbsp;</p>
+          <p>Son cuatro tote bags de algodón natural con diseños DTF de alta resolución.<br>
+          Cada una lleva una frase. Cada una nació de algo real.</p>
+          <p>&nbsp;</p>
+          <p>Mañana lo abrimos al resto de la lista.<br>
+          Hoy es solo para vosotras.</p>
+        </span>
+      </div>
+
+      <div class="em-divider"></div>
+
+      <div class="em-collection-intro">
+        <div class="em-collection-title">Colección ALMA · Acceso VIP</div>
+        <div class="em-collection-subtitle">Antes que nadie.</div>
+      </div>
+
+      <!-- Grid productos (mismo) -->
+      <div class="em-products">
+        <div class="em-product-card">
+          <div class="em-product-img grad-luna">
+            <div class="em-product-img-placeholder"><span>Luna</span></div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Luna</div>
+            <div class="em-product-quote">"Si vas a soñar, ¡Exagera!"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+        <div class="em-product-card">
+          <div class="em-product-img grad-mariposa">
+            <div class="em-product-img-placeholder"><span>Mariposa</span></div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Mariposa</div>
+            <div class="em-product-quote">"Mi energía habla antes que yo"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+        <div class="em-product-card">
+          <div class="em-product-img grad-pluma">
+            <div class="em-product-img-placeholder"><span>Pluma</span></div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Pluma</div>
+            <div class="em-product-quote">"Si no pasa, también es una señal"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+        <div class="em-product-card">
+          <div class="em-product-img grad-loto">
+            <div class="em-product-img-placeholder"><span>Loto</span></div>
+          </div>
+          <div class="em-product-info-block">
+            <div class="em-product-name">Tote Bag Loto</div>
+            <div class="em-product-quote">"Rendirse no es una opción"</div>
+            <div class="em-product-price-tag">22,95 €</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="em-cta-wrap">
+        <a href="#" class="em-cta-btn">Ver la colección ALMA</a>
+      </div>
+
+      <div class="em-firma">
+        <p>Un abrazo,</p>
+        <p><strong>Úrsula y Albert · Triple Intención</strong></p>
+      </div>
+
+      <div class="em-footer">
+        Triple Intención · Tarragona<br>
+        <a href="#">Darte de baja</a> &nbsp;·&nbsp; <a href="#">Ver en el navegador</a><br>
+        <span style="opacity:0.4;font-size:9px">Simulación interna · No publicar sin validación de Úrsula</span>
+      </div>
+
+    </div>
+  </div><!-- /email-client-shell vip -->
+
+</div><!-- /email-page -->
+
+
+<div class="footer-band">
+  Triple Intención · Tarragona &nbsp;·&nbsp; Simulación interna ALMA · No publicar sin validación de Úrsula
+</div>
+
+<script>
+  // ── Tabs principales ─────────────────────────
+  function showProduct(name, btn) {
+    document.querySelectorAll('.product-page, .email-page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+
+    const target = name === 'email'
+      ? document.getElementById('prod-email')
+      : document.getElementById('prod-' + name);
+    if (target) target.classList.add('active');
+    btn.classList.add('active');
+
+    // Email tab: color turquesa cuando activo
+    if (name === 'email') {
+      btn.style.color = 'var(--turquesa)';
+      btn.style.borderBottomColor = 'var(--turquesa)';
+    }
+  }
+
+  // ── Versión email (VIP / Open90) ─────────────
+  function showEmailVersion(ver) {
+    document.getElementById('email-open90').style.display = ver === 'open90' ? '' : 'none';
+    document.getElementById('email-vip').style.display    = ver === 'vip'    ? '' : 'none';
+    document.getElementById('btn-open90').className = 'email-ver-btn' + (ver === 'open90' ? ' active' : '');
+    document.getElementById('btn-vip').className    = 'email-ver-btn' + (ver === 'vip'    ? ' active' : '');
+  }
+
+  // ── Expand "seguir leyendo" ───────────────────
+  function expandEmail(ver) {
+    const full = document.getElementById('em-full-' + ver);
+    if (full) {
+      full.style.display = 'block';
+      full.previousElementSibling.style.display = 'none';
+    }
+  }
+
+  // ── Qty bolsas ───────────────────────────────
+  function changeQty(delta, btn) {
+    const input = btn.parentElement.querySelector('.qty-num');
+    const val = Math.max(1, parseInt(input.value) + delta);
+    input.value = val;
+  }
+
+  // ── Carga imágenes lifestyle ─────────────────
+  const imageMap = {
+    luna:     '../imagenes/lifestyle_luna_final.png',
+    mariposa: '../imagenes/lifestyle_mariposa_final.png',
+    pluma:    '../imagenes/lifestyle_pluma_final.png',
+    loto:     '../imagenes/lifestyle_loto_final.png',
+  };
+
+  function tryLoadImage(name) {
+    const container = document.getElementById(name + '-main-img');
+    if (!container) return;
+    const img = new Image();
+    img.onload = () => {
+      container.innerHTML = '';
+      container.style.background = 'none';
+      const imgEl = document.createElement('img');
+      imgEl.src = imageMap[name];
+      imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover';
+      container.appendChild(imgEl);
+    };
+    img.onerror = () => setTimeout(() => tryLoadImage(name), 8000);
+    img.src = imageMap[name] + '?t=' + Date.now();
+  }
+
+  // Cargar imágenes en el email también
+  function tryLoadEmailImage(name, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const img = new Image();
+    img.onload = () => {
+      container.innerHTML = '';
+      container.style.background = 'none';
+      const imgEl = document.createElement('img');
+      imgEl.src = imageMap[name];
+      imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+      container.appendChild(imgEl);
+    };
+    img.onerror = () => setTimeout(() => tryLoadEmailImage(name, containerId), 8000);
+    img.src = imageMap[name] + '?t=' + Date.now();
+  }
+
+  // Mariposa confirmada — aplicar directamente
+  const mariposaContainer = document.getElementById('mariposa-main-img');
+  if (mariposaContainer) {
+    const t = new Image();
+    t.onload = () => {
+      mariposaContainer.innerHTML = `<img src="${imageMap.mariposa}" style="width:100%;height:100%;object-fit:cover">`;
+      mariposaContainer.style.background = 'none';
+    };
+    t.src = imageMap.mariposa;
+  }
+
+  // Resto: retry cada 8s hasta que aparezcan
+  ['luna', 'pluma', 'loto'].forEach(n => tryLoadImage(n));
+
+  // Email hero: mariposa para open90, luna para VIP
+  tryLoadEmailImage('mariposa', 'em-hero-open90');
+  tryLoadEmailImage('luna',     'em-hero-vip');
+
+  // Cards del email
+  tryLoadEmailImage('luna',     'em-img-luna');
+  tryLoadEmailImage('mariposa', 'em-img-mariposa');
+  tryLoadEmailImage('pluma',    'em-img-pluma');
+  tryLoadEmailImage('loto',     'em-img-loto');
+</script>
+</body>
+</html>
