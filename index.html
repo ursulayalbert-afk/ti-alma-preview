@@ -115,8 +115,8 @@
     .product-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      max-width: 1200px;
+      gap: 40px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -150,6 +150,7 @@
 
     .gallery-main {
       flex: 1;
+      max-height: 420px;
       aspect-ratio: 3/4;
       overflow: hidden;
       border-radius: 2px;
@@ -794,11 +795,13 @@
     .em-read-more:hover { text-decoration: underline; }
 
     @media (max-width: 900px) {
-      .product-layout { grid-template-columns: 1fr; gap: 32px; }
+      .product-layout { grid-template-columns: 1fr; gap: 24px; }
       .header { padding: 0 24px; }
       .product-page { padding: 0 24px 60px; }
       .products-selector { padding: 0 24px; overflow-x: auto; }
       .breadcrumb { padding: 16px 24px; }
+      .gallery-main { max-height: 300px; }
+      .gallery-thumbs { display: none; }
       .email-page { padding: 20px 0 60px; }
       .email-client-shell { border-radius: 0; }
       .em-text { padding: 0 24px 28px; }
@@ -1502,10 +1505,17 @@
 
   // ── Carga imágenes lifestyle ─────────────────
   const imageMap = {
-    luna:     'images/lifestyle_luna_final.png',
-    mariposa: 'images/lifestyle_mariposa_final.png',
-    pluma:    'images/lifestyle_pluma_final.png',
-    loto:     'images/lifestyle_loto_final.png',
+    luna:     'images/final_luna.png',
+    mariposa: 'images/final_mariposa.png',
+    pluma:    'images/final_pluma.png',
+    loto:     'images/final_loto.png',
+  };
+  // Fallback a lifestyle si final no existe aun
+  const fallbackMap = {
+    luna:     'images/lifestyle_luna_original_backup.png',
+    mariposa: 'images/lifestyle_mariposa_original_backup.png',
+    pluma:    'images/lifestyle_pluma_original_backup.png',
+    loto:     'images/lifestyle_loto_original_backup.png',
   };
 
   function tryLoadImage(name) {
@@ -1520,7 +1530,20 @@
       imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover';
       container.appendChild(imgEl);
     };
-    img.onerror = () => setTimeout(() => tryLoadImage(name), 8000);
+    img.onerror = () => {
+      // Intentar fallback lifestyle limpio
+      const fb = new Image();
+      fb.onload = () => {
+        container.innerHTML = '';
+        container.style.background = 'none';
+        const imgEl = document.createElement('img');
+        imgEl.src = fallbackMap[name];
+        imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover';
+        container.appendChild(imgEl);
+      };
+      fb.onerror = () => setTimeout(() => tryLoadImage(name), 8000);
+      fb.src = fallbackMap[name] + '?t=' + Date.now();
+    };
     img.src = imageMap[name] + '?t=' + Date.now();
   }
 
