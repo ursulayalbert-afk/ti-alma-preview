@@ -1,0 +1,22 @@
+{
+  "_comentario": "MERGE estas dos entradas dentro del objeto mcpServers existente de %APPDATA%\\Claude\\claude_desktop_config.json. NO borres otras entradas (p.ej. el proxy de Anthropic u otros MCP). Ver install_pipeline.ps1 que hace el merge automaticamente.",
+  "mcpServers": {
+    "capcut": {
+      "command": "node",
+      "args": [
+        "C:\\COMPARTIDO\\Sauron\\tools\\capcut-pipeline\\capcut-mcp-server\\dist\\index.js"
+      ],
+      "env": {
+        "CAPCUT_API_URL": "http://localhost:9001"
+      }
+    },
+    "smartcut": {
+      "command": "C:\\COMPARTIDO\\Sauron\\tools\\capcut-pipeline\\smartcut\\venv-smartcut\\Scripts\\python.exe",
+      "args": ["-m", "smartcut.server"],
+      "env": {
+        "_comentario_drafts": "Descomenta y ajusta SOLO si SmartCut no detecta la carpeta draft automaticamente. Verifica el path real con: install_pipeline.ps1 -FindDraftsOnly",
+        "CAPCUT_DRAFTS_DIR": "C:\\Users\\usuari\\AppData\\Local\\CapCut\\User Data\\draft"
+      }
+    }
+  }
+}
